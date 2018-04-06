@@ -1,4 +1,4 @@
-from scripts import broadlink_custom
+import broadlink_custom
 
 
 def discover(device, timeout=5, device_address=None):

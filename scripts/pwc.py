@@ -1,4 +1,5 @@
-from scripts import network_tools, discover
+import network_tools
+import discover
 import argparse
 import time
 
