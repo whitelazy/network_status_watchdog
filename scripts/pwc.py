@@ -6,23 +6,35 @@ import time
 
 def init_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '-network_test_url', help='default uri : http://clients3.google.com/generate_204', default='http://clients3.google.com/generate_204')
-    parser.add_argument('-network_timeout', help='default: 5', default=5)
-    parser.add_argument('-d', '-device', help='default SP2', default='SP2')
-    parser.add_argument('-a', '-address', help='device address (default: none, discoversy device)', default=None)
-    parser.add_argument('-t', '-timeout', help='device discovery timeout, default=5', default=5)
+    parser.add_argument('-n', '--network_test_url', help='default uri : http://clients3.google.com/generate_204', default='http://clients3.google.com/generate_204')
+    parser.add_argument('--network_timeout', help='default: 5', default=5)
+    parser.add_argument('-d', '--device', help='default SP2', default='SP2')
+    parser.add_argument('--host', help='device host (default: none, discoversy device)')
+    parser.add_argument('--mac', help='device mac address')
+    parser.add_argument('--type', help='device type, (default=0x2712 SP2)', default=0x753e)
+    parser.add_argument('--timeout', help='device discovery timeout, default=5', default=5)
     return  parser.parse_args()
 
 
 def main():
     args = init_args()
-    dev = discover.discover(args.d, timeout=args.t, device_address=args.a)
+    if args.host is None:
+        dev = discover.discover(args.device, timeout=args.timeout)
+    else:
+        if args.type is str:
+            type = int(args.type, 0)
+        else:
+            type = args.type
+        dev = discover.gendevice(type, args.host, bytearray.fromhex(args.mac))
 
     if dev is None:
         print('No device founded')
         exit(1)
+    #
+    # print(dev.host)
+    # print(''.join('{:02x}'.format(x) for x in dev.mac))
 
-    if network_tools.check_network_connection(url=args.n, timeout=args.network_timeout):
+    if network_tools.check_network_connection(url=args.network_test_url, timeout=args.network_timeout):
         print("Network status is good!")
     else:
         print("Network status is disconnected\nreset cable modem")
