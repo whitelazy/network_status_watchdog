@@ -16,22 +16,22 @@ def init_args():
 
 def main():
     args = init_args()
-    device = discover.discover(args.device, timeout=args.timeout, device_address=args.address)
+    dev = discover.discover(args.d, timeout=args.t, device_address=args.a)
 
-    if device is None:
+    if dev is None:
         print('No device founded')
         exit(1)
 
-    if network_tools.check_network_connection():
+    if network_tools.check_network_connection(url=args.n, timeout=args.network_timeout):
         print("Network status is good!")
     else:
         print("Network status is disconnected\nreset cable modem")
-        device.auth()
+        dev.auth()
         print("Power Off")
-        device.set_power(False)
+        dev.set_power(False)
         time.sleep(2)
         print("Power On")
-        device.set_power(True)
+        dev.set_power(True)
 
 
 if __name__ == "__main__":
