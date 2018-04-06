@@ -1,10 +1,14 @@
 import broadlink_custom
 
 
-def discover(device, timeout=5, device_address=None):
-    devices = broadlink_custom.discover(timeout=timeout, local_ip_address=device_address)
+def discover(device, timeout=5):
+    devices = broadlink_custom.discover(timeout=timeout)
     filtered = list(filter(lambda x: x.type == device, devices))
     if len(filtered) == 0:
         return None
     else:
         return filtered[0]
+
+
+def gendevice(type, host, mac):
+    return broadlink_custom.gendevice(type, host, mac)
