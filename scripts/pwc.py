@@ -2,6 +2,7 @@ import network_tools
 import discover
 import argparse
 import time
+import datetime
 
 
 def init_args():
@@ -35,15 +36,17 @@ def main():
     # print(''.join('{:02x}'.format(x) for x in dev.mac))
 
     if network_tools.check_network_connection(url=args.network_test_url, timeout=args.network_timeout):
-        print("Network status is good!")
+        print("{} Network status is good!".format(datetime.datetime.now()))
     else:
-        print("Network status is disconnected\nreset cable modem")
+        print("{} Network status is disconnected\nreset cable modem".format(datetime.datetime.now()))
         dev.auth()
         print("Power Off")
         dev.set_power(False)
         time.sleep(2)
         print("Power On")
         dev.set_power(True)
+
+    print("\n\n")
 
 
 if __name__ == "__main__":
