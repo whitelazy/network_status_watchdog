@@ -1,5 +1,4 @@
-import network_tools
-import discover
+from scripts import status_notifier, network_tools, discover
 import argparse
 import time
 import datetime
@@ -14,10 +13,12 @@ def init_args():
     parser.add_argument('--mac', help='device mac address')
     parser.add_argument('--type', help='device type, (default=0x2712 SP2)', default=0x753e)
     parser.add_argument('--timeout', help='device discovery timeout, default=5', default=5)
-    return  parser.parse_args()
+    parser.add_argument('-s', '--slack', help='slack incoming webhooc url')
+    return parser.parse_args()
 
 
 def main():
+    print("\n\n")
     args = init_args()
     if args.host is None:
         dev = discover.discover(args.device, timeout=args.timeout)
@@ -31,7 +32,7 @@ def main():
     if dev is None:
         print('No device founded')
         exit(1)
-    #
+
     # print(dev.host)
     # print(''.join('{:02x}'.format(x) for x in dev.mac))
 
@@ -46,7 +47,23 @@ def main():
         print("Power On")
         dev.set_power(True)
 
-    print("\n\n")
+        print('wait for network connected')
+        for i in range(0, 300, 5):
+            print('check network connection status')
+            args.network_test_url = 'http://clients3.google.com/generate_204'
+            if network_tools.check_network_connection(url=args.network_test_url, timeout=args.network_timeout):
+                print('network connected')
+                targets = {}
+                if args.slack:
+                    targets['slack'] = args.slack
+
+                status_notifier.notify('Network recovered', targets)
+                exit(0)
+                break
+            else:
+                time.sleep(5)
+        print('network recovery failed')
+        exit(1)
 
 
 if __name__ == "__main__":

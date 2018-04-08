@@ -11,4 +11,4 @@ def discover(device, timeout=5):
 
 
 def gendevice(type, host, mac):
-    return broadlink_custom.gendevice(type, host, mac)
+    return broadlink_custom.gendevice(type, (host, 80), mac)
