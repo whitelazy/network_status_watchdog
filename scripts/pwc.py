@@ -1,4 +1,6 @@
-from scripts import status_notifier, network_tools, discover
+import status_notifier
+import network_tools
+import discover
 import argparse
 import time
 import datetime
