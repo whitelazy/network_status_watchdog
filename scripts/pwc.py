@@ -27,10 +27,10 @@ def main():
         dev = discover.discover(args.device, timeout=args.timeout)
     else:
         if args.type is str:
-            type = int(args.type, 0)
+            dev_type = int(args.type, 0)
         else:
-            type = args.type
-        dev = discover.gendevice(type, args.host, bytearray.fromhex(args.mac))
+            dev_type = args.type
+        dev = discover.gendevice(dev_type, args.host, bytearray.fromhex(args.mac))
 
     if dev is None:
         print('No device founded')

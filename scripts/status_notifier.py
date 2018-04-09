@@ -12,8 +12,7 @@ def notify_slack(url, name, msg):
     obj = {'text': msg}
     if name is not None:
         obj['username'] = name
-    post_json(url
-              , bytes(json.dumps(obj), 'utf-8'))
+    return post_json(url, bytes(json.dumps(obj), 'utf-8'))
 
 
 def notify(msg, name, targets):
@@ -27,7 +26,7 @@ def test():
                     , bytes('{"text":"test message"}', 'utf-8')))
 
     print(notify_slack('https://hooks.slack.com/services/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'
-                       , 'test bot', '{"text":"test message"}'))
+                       , 'test bot', 'test message'))
 
 
 if __name__ == '__main__':
