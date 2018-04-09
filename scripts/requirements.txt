@@ -1,3 +1,4 @@
 broadlink==0.8
 PyCRC==1.21
-pycryptodome==3.4.11
+pycryptodome==3.6.0
+pytz==2018.3
