@@ -8,13 +8,14 @@ import datetime
 
 def init_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '--network_test_url', help='default uri : http://clients3.google.com/generate_204', default='http://clients3.google.com/generate_204')
+    parser.add_argument('--network_test_url', help='default uri : http://clients3.google.com/generate_204', default='http://clients3.google.com/generate_204')
     parser.add_argument('--network_timeout', help='default: 5', default=5)
     parser.add_argument('-d', '--device', help='default SP2', default='SP2')
     parser.add_argument('--host', help='device host (default: none, discoversy device)')
     parser.add_argument('--mac', help='device mac address')
     parser.add_argument('--type', help='device type, (default=0x2712 SP2)', default=0x753e)
     parser.add_argument('--timeout', help='device discovery timeout, default=5', default=5)
+    parser.add_argument('--name', help='device alias')
     parser.add_argument('-s', '--slack', help='slack incoming webhooc url')
     return parser.parse_args()
 
@@ -59,7 +60,7 @@ def main():
                 if args.slack:
                     targets['slack'] = args.slack
 
-                status_notifier.notify('Network recovered', targets)
+                status_notifier.notify('Network recovered', args.name, targets)
                 exit(0)
                 break
             else:
