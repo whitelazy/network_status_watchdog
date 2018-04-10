@@ -1,7 +1,7 @@
-from scripts.status_notifier import notify
-from scripts.network_tools import check_network_connection
-from scripts.discover import discover, gendevice
-from scripts.utils import get_datetime_string, set_default_timezone
+import status_notifier
+import network_tools
+import discover
+import utils
 import argparse
 import time
 from pytz import timezone
@@ -26,13 +26,13 @@ def main():
     print("\n\n")
     args = init_args()
     if args.host is None:
-        dev = discover(args.device, timeout=args.timeout)
+        dev = discover.discover(args.device, timeout=args.timeout)
     else:
         if args.type is str:
             dev_type = int(args.type, 0)
         else:
             dev_type = args.type
-        dev = gendevice(dev_type, args.host, bytearray.fromhex(args.mac))
+        dev = discover.gendevice(dev_type, args.host, bytearray.fromhex(args.mac))
 
     if dev is None:
         print('No device founded')
@@ -42,12 +42,12 @@ def main():
     # print(''.join('{:02x}'.format(x) for x in dev.mac))
 
     if args.timezone:
-        set_default_timezone(timezone(args.timezone))
+        utils.set_default_timezone(timezone(args.timezone))
 
-    if check_network_connection(url=args.network_test_url, timeout=args.network_timeout):
-        print("{} Network status is good!".format(get_datetime_string()))
+    if network_tools.check_network_connection(url=args.network_test_url, timeout=args.network_timeout):
+        print("{} Network status is good!".format(utils.get_datetime_string()))
     else:
-        print("{} Network status is disconnected\nreset cable modem".format(get_datetime_string()))
+        print("{} Network status is disconnected\nreset cable modem".format(utils.get_datetime_string()))
         dev.auth()
         print("Power Off")
         dev.set_power(False)
@@ -59,13 +59,13 @@ def main():
         for i in range(0, 300, 5):
             print('check network connection status')
             args.network_test_url = 'http://clients3.google.com/generate_204'
-            if check_network_connection(url=args.network_test_url, timeout=args.network_timeout):
+            if network_tools.check_network_connection(url=args.network_test_url, timeout=args.network_timeout):
                 print('network connected')
                 targets = {}
                 if args.slack:
                     targets['slack'] = args.slack
 
-                notify('Network recovered', args.name, targets)
+                status_notifier.notify('Network recovered', args.name, targets)
                 exit(0)
                 break
             else:
