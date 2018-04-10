@@ -1,12 +1,11 @@
 import urllib.request
 import sys
 import datetime
-from scripts.utils import get_datetime_string
-
+import utils
 
 def check_network_connection(url='http://clients3.google.com/generate_204', timeout=5):
     try:
-        print('{} Sending request to {}'.format(get_datetime_string(), url))
+        print('{} Sending request to {}'.format(utils.get_datetime_string(), url))
         response = urllib.request.urlopen(url, timeout=timeout)
 
         status = response.status
@@ -16,7 +15,7 @@ def check_network_connection(url='http://clients3.google.com/generate_204', time
         # Generally using a catch-all is a bad practice but
         # I think it's ok in this case
         print(e)
-        print('{} Request to {} failed'.format(get_datetime_string(), url))
+        print('{} Request to {} failed'.format(utils.get_datetime_string(), url))
         status = 0
 
     if status == 204:
